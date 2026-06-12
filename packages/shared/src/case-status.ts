@@ -1,0 +1,32 @@
+/**
+ * Canonical service-request statuses. Mirrors the Prisma `CaseStatus` enum —
+ * the API state machine is the single authority for transitions.
+ */
+export const CASE_STATUSES = [
+  'REQUEST_CREATED',
+  'AWAITING_RECOVERY_ASSIGNMENT',
+  'RECOVERY_ASSIGNED',
+  'RECOVERY_EN_ROUTE',
+  'RECOVERY_ARRIVED',
+  'VEHICLE_COLLECTED',
+  'VEHICLE_IN_TRANSIT',
+  'VEHICLE_AT_GARAGE',
+  'INSPECTION_IN_PROGRESS',
+  'DIAGNOSIS_SUBMITTED',
+  'AWAITING_CUSTOMER_APPROVAL',
+  'PARTS_SELECTION_REQUIRED',
+  'PARTS_ORDERED',
+  'PARTS_DISPATCHED',
+  'PARTS_DELIVERED',
+  'REPAIR_IN_PROGRESS',
+  'QUALITY_CHECK_IN_PROGRESS',
+  'REPAIR_COMPLETED',
+  'DELIVERY_SCHEDULED',
+  'VEHICLE_OUT_FOR_DELIVERY',
+  'VEHICLE_DELIVERED',
+  'CASE_CLOSED',
+  'CANCELLED',
+  'DISPUTED',
+] as const;
+
+export type CaseStatus = (typeof CASE_STATUSES)[number];

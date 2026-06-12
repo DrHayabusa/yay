@@ -1,0 +1,21 @@
+{
+  "name": "sanad-platform",
+  "private": true,
+  "version": "0.1.0",
+  "description": "UAE vehicle breakdown recovery & repair platform — monorepo",
+  "scripts": {
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck",
+    "dev:api": "pnpm --filter @sanad/api start:dev",
+    "dev:admin": "pnpm --filter @sanad/admin dev",
+    "db:migrate": "pnpm --filter @sanad/api prisma:migrate",
+    "db:generate": "pnpm --filter @sanad/api prisma:generate",
+    "db:seed": "pnpm --filter @sanad/api prisma:seed"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "pnpm@10.33.0"
+}
