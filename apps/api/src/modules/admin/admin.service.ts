@@ -29,13 +29,92 @@ export class AdminService {
       orderBy: { createdAt: 'desc' },
       take: Math.min(limit, 200),
       include: {
-        vehicle: { select: { make: true, model: true, year: true, plateEmirate: true, plateNumber: true } },
+        vehicle: { select: { make: true, model: true, year: true, plateEmirate: true, plateCode: true, plateNumber: true } },
         garage: { select: { id: true, name: true } },
         recoveryAssignments: {
           where: { status: { in: ['OFFERED', 'ACCEPTED'] } },
           include: { driver: { include: { user: { select: { fullName: true, phone: true } } } } },
         },
       },
+    });
+  }
+
+  async getCase(id: string) {
+    const sr = await this.prisma.serviceRequest.findUnique({
+      where: { id },
+      include: {
+        vehicle: true,
+        garage: { select: { id: true, name: true, address: true, phone: true } },
+        media: { select: { id: true, kind: true, mimeType: true, createdAt: true } },
+        recoveryAssignments: {
+          include: {
+            driver: { include: { user: { select: { fullName: true, phone: true } } } },
+            recoveryVehicle: { select: { plateNumber: true, truckType: true } },
+          },
+        },
+        quotations: { include: { items: { include: { approval: true } } }, orderBy: { version: 'desc' } },
+        payments: { select: { id: true, kind: true, status: true, total: true, currency: true, createdAt: true } },
+        statusHistory: { orderBy: { createdAt: 'asc' } },
+      },
+    });
+    if (!sr) throw new NotFoundException({ error: 'NOT_FOUND', message: 'Service request not found' });
+    return sr;
+  }
+
+  // ---------- directory lists for assignment & verification UIs ----------
+
+  async listDrivers(onlyAvailable = false) {
+    return this.prisma.driver.findMany({
+      where: {
+        ...(onlyAvailable ? { isAvailable: true } : {}),
+        provider: { deletedAt: null },
+      },
+      include: {
+        user: { select: { fullName: true, phone: true } },
+        provider: { select: { id: true, companyName: true, verification: true } },
+      },
+      orderBy: { createdAt: 'asc' },
+    });
+  }
+
+  async listGarages(verification?: VerificationStatus) {
+    return this.prisma.garage.findMany({
+      where: { deletedAt: null, ...(verification ? { verification } : {}) },
+      select: {
+        id: true, name: true, emirate: true, address: true, phone: true,
+        verification: true, tradeLicenceNo: true, createdAt: true,
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async listProviders(verification?: VerificationStatus) {
+    return this.prisma.providerProfile.findMany({
+      where: { deletedAt: null, ...(verification ? { verification } : {}) },
+      select: {
+        id: true, companyName: true, phone: true, verification: true,
+        tradeLicenceNo: true, createdAt: true,
+        _count: { select: { drivers: true, recoveryVehicles: true } },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async listSuppliers(verification?: VerificationStatus) {
+    return this.prisma.supplier.findMany({
+      where: { deletedAt: null, ...(verification ? { verification } : {}) },
+      select: {
+        id: true, name: true, emirate: true, phone: true, verification: true,
+        tradeLicenceNo: true, createdAt: true,
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async listPricing() {
+    return this.prisma.pricingConfig.findMany({
+      where: { isActive: true },
+      orderBy: { emirate: 'asc' },
     });
   }
 

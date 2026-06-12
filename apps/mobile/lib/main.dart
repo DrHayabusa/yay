@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'core/api_client.dart';
+import 'core/theme.dart';
 import 'features/auth/login_screen.dart';
 import 'features/home/home_screen.dart';
 
@@ -25,10 +26,7 @@ class SanadApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Sanad',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF2F9E6E)),
-        useMaterial3: true,
-      ),
+      theme: SanadTheme.dark(),
       // RTL-ready from day one.
       supportedLocales: const [Locale('en'), Locale('ar')],
       localizationsDelegates: const [

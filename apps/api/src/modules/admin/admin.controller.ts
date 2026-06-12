@@ -61,6 +61,36 @@ export class AdminController {
     return this.admin.listCases(status, limit ? Number(limit) : undefined);
   }
 
+  @Get('cases/:id')
+  case(@Param('id') id: string) {
+    return this.admin.getCase(id);
+  }
+
+  @Get('drivers')
+  drivers(@Query('available') available?: string) {
+    return this.admin.listDrivers(available === 'true');
+  }
+
+  @Get('garages')
+  garages(@Query('verification') verification?: VerificationStatus) {
+    return this.admin.listGarages(verification);
+  }
+
+  @Get('providers')
+  providers(@Query('verification') verification?: VerificationStatus) {
+    return this.admin.listProviders(verification);
+  }
+
+  @Get('suppliers')
+  suppliers(@Query('verification') verification?: VerificationStatus) {
+    return this.admin.listSuppliers(verification);
+  }
+
+  @Get('pricing')
+  pricing() {
+    return this.admin.listPricing();
+  }
+
   @Post('cases/:id/assign-recovery')
   @HttpCode(200)
   assignRecovery(

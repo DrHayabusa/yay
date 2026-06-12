@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../../core/api_client.dart';
 import '../../core/strings.dart';
+import '../../core/theme.dart';
+import '../../widgets/hazard_strip.dart';
+import '../../widgets/sanad_logo.dart';
 import '../home/home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -66,63 +69,102 @@ class _LoginScreenState extends State<LoginScreen> {
     final s = S.of(context);
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SizedBox(height: 48),
-              Text(s.t('Welcome to Sanad', 'مرحباً بك في سند'),
-                  style: Theme.of(context).textTheme.headlineMedium),
-              const SizedBox(height: 8),
-              Text(
-                s.t('Roadside help, honest repairs.', 'مساعدة على الطريق وإصلاح موثوق.'),
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-              const SizedBox(height: 32),
-              TextField(
-                controller: _phone,
-                keyboardType: TextInputType.phone,
-                enabled: !_codeSent,
-                decoration: InputDecoration(
-                  labelText: s.t('Phone number', 'رقم الهاتف'),
-                  border: const OutlineInputBorder(),
-                ),
-              ),
-              if (_codeSent) ...[
-                const SizedBox(height: 16),
-                TextField(
-                  controller: _code,
-                  keyboardType: TextInputType.number,
-                  maxLength: 6,
-                  decoration: InputDecoration(
-                    labelText: s.t('6-digit code', 'الرمز المكون من 6 أرقام'),
-                    border: const OutlineInputBorder(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const HazardStrip(),
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.fromLTRB(24, 40, 24, 24),
+                children: [
+                  Row(
+                    children: [
+                      const SanadLogo(size: 44),
+                      const SizedBox(width: 14),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'SANAD',
+                            style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 4,
+                            ),
+                          ),
+                          Text(
+                            s.t('roadside · repair · parts', 'سحب · إصلاح · قطع غيار'),
+                            style: const TextStyle(
+                                fontSize: 11, color: SanadColors.muted, letterSpacing: 0.6),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                ),
-                TextField(
-                  controller: _name,
-                  decoration: InputDecoration(
-                    labelText: s.t('Full name (new accounts)', 'الاسم الكامل (للحسابات الجديدة)'),
-                    border: const OutlineInputBorder(),
+                  const SizedBox(height: 36),
+                  Text(
+                    s.t('Stuck is temporary.', 'التوقف مؤقت.'),
+                    style: Theme.of(context)
+                        .textTheme
+                        .headlineMedium
+                        ?.copyWith(fontSize: 30, height: 1.15),
                   ),
-                ),
-              ],
-              const SizedBox(height: 24),
-              FilledButton(
-                onPressed: _busy ? null : (_codeSent ? _verify : _requestCode),
-                child: Text(_codeSent
-                    ? s.t('Sign in', 'تسجيل الدخول')
-                    : s.t('Send code', 'إرسال الرمز')),
+                  Text(
+                    s.t('Sign in with your phone — no passwords.',
+                        'سجل الدخول برقم هاتفك — بدون كلمات مرور.'),
+                    style: const TextStyle(color: SanadColors.muted, fontSize: 14.5),
+                  ),
+                  const SizedBox(height: 30),
+                  Text(s.t('PHONE NUMBER', 'رقم الهاتف'),
+                      style: Theme.of(context).textTheme.labelSmall),
+                  const SizedBox(height: 8),
+                  TextField(
+                    controller: _phone,
+                    keyboardType: TextInputType.phone,
+                    enabled: !_codeSent,
+                    decoration: const InputDecoration(hintText: '+9715XXXXXXXX'),
+                  ),
+                  if (_codeSent) ...[
+                    const SizedBox(height: 18),
+                    Text(s.t('ONE-TIME CODE', 'الرمز المؤقت'),
+                        style: Theme.of(context).textTheme.labelSmall),
+                    const SizedBox(height: 8),
+                    TextField(
+                      controller: _code,
+                      keyboardType: TextInputType.number,
+                      maxLength: 6,
+                      autofocus: true,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 22,
+                        letterSpacing: 12,
+                        fontWeight: FontWeight.w700,
+                      ),
+                      decoration: const InputDecoration(counterText: '', hintText: '······'),
+                    ),
+                    const SizedBox(height: 14),
+                    Text(s.t('FULL NAME — NEW ACCOUNTS ONLY', 'الاسم الكامل — للحسابات الجديدة'),
+                        style: Theme.of(context).textTheme.labelSmall),
+                    const SizedBox(height: 8),
+                    TextField(controller: _name),
+                  ],
+                  const SizedBox(height: 26),
+                  FilledButton(
+                    onPressed: _busy ? null : (_codeSent ? _verify : _requestCode),
+                    child: Text(_codeSent
+                        ? s.t('SIGN IN', 'تسجيل الدخول')
+                        : s.t('SEND CODE', 'إرسال الرمز')),
+                  ),
+                  if (_error != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 12),
+                      child: Text(_error!,
+                          style: const TextStyle(color: SanadColors.red, fontSize: 13)),
+                    ),
+                ],
               ),
-              if (_error != null)
-                Padding(
-                  padding: const EdgeInsets.only(top: 12),
-                  child: Text(_error!,
-                      style: TextStyle(color: Theme.of(context).colorScheme.error)),
-                ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

@@ -11,6 +11,7 @@
     "test": "echo \"admin: no tests yet (M7)\" && exit 0"
   },
   "dependencies": {
+    "@sanad/shared": "workspace:*",
     "next": "^15.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"

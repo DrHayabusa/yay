@@ -83,10 +83,21 @@ placeholder security. Production adapters need:
 - **Malware scanning:** AV service wired to the media `scanStatus` hook.
 - **Emirates ID / KYC:** approved provider (post-MVP).
 
+## Design language
+
+Both UIs share a bespoke identity — **"job ticket / road"** — built by hand, no component
+library: asphalt darks with a signal-amber accent, hazard-stripe brand strip, UAE number
+plates rendered as physical objects, case history drawn as a road with a dashed centerline,
+ticket-style cards with perforated stub edges, Space Grotesk + IBM Plex Mono typography
+(web), and tight radii throughout. The Flutter app implements the same system with custom
+painters (`lib/widgets/`): `HazardStrip`, `SanadLogo`, `PlateChip`, `RoadTimeline`, and the
+notched `BigAction` hero.
+
 ## Status
 
-Milestones M0–M4 complete, M5–M7 partially complete (see `docs/08-milestones.md`):
+Milestones M0–M4 complete, M5–M7 substantially complete (see `docs/08-milestones.md`):
 backend core, auth + RBAC, full state machine, recovery/garage/quotation/parts/payments
-flows, admin case board, Flutter scaffold. Next: WebSocket tracking, chat/ratings
-endpoints, notification fan-out via BullMQ, full admin verification UI, Flutter media
-capture wiring.
+flows; admin console with live case board, case detail (road timeline, quotation, payments),
+verification queues and pricing config; Flutter app with custom design system, home, login,
+breakdown wizard, vehicles, and timeline. Next: WebSocket tracking, chat/ratings endpoints,
+notification fan-out via BullMQ, Flutter camera/GPS/voice wiring.
